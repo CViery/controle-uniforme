@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Entrada</title>
+    <style>
+        /* Estilos globais */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="date"], 
+        .form-group input[type="datetime-local"] {
+            font-family: inherit;
+        }
+
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 600px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegação -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/cadastros">Cadastros</a></li>
+                <li><a href="/entrada">Entradas</a></li>
+                <li><a href="/saida">Saídas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Formulário -->
+    <div class="form-container">
+        {% csrf_token %}
+        <h2>Formulário de Entrada</h2>
+        <form action="/processar_formulario/" method="POST">
+            <div class="form-group">
+                <label for="num_nota">Número da Nota</label>
+                <input type="number" id="num_nota" name="num_nota" required>
+            </div>
+
+            <div class="form-group">
+                <label for="data_emissao">Data de Emissão</label>
+                <input type="date" id="data_emissao" name="data_emissao" required>
+            </div>
+
+            <div class="form-group">
+                <label for="data_entrada">Data de Entrada</label>
+                <input type="datetime-local" id="data_entrada" name="data_entrada" required>
+            </div>
+
+            <div class="form-group">
+                <label for="uniforme">Uniforme</label>
+                <select id="uniforme" name="uniforme" required>
+                    <option value="" disabled selected>Selecione o uniforme</option>
+                    <!-- As opções podem ser populadas dinamicamente com Django -->
+                    {% for uniforme in uniformes  %}
+                    <option value="{{uniforme.codigo}}">{{uniforme}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade</label>
+                <input type="number" id="quantidade" name="quantidade" onchange="calcular_valor()" required>
+            </div>
+
+            <div class="form-group">
+                <label for="valor_uni">Valor Unitário</label>
+                <input type="number" id="valor_uni" name="valor_uni" step="0.01" onchange="calcular_valor()" required>
+            </div>
+
+            <div class="form-group">
+                <label for="valor_total">Valor Total</label>
+                <input type="number" id="valor_total" name="valor_total" step="0.01" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Enviar</button>
+        </form>
+    </div>
+<script src="{% static "uniforms/js/entradas.js" %}"></script>
+</body>
+</html>
